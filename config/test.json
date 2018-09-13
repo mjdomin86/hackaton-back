@@ -1,0 +1,4 @@
+{
+    // Test db
+    "MONGO_URI":"mongodb://userapp@userapp@ds113505.mlab.com:13505/ristrettodb"
+}

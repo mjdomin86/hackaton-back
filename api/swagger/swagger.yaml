@@ -1,0 +1,443 @@
+swagger: "2.0"
+info:
+  version: "0.01"
+  title: App
+  description: API Documentation
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+#host: Taked automatically from site
+basePath: /
+
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  #- https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /api/private/movements:
+    x-swagger-router-controller: movement.controller
+    get:
+        description: Returns the list of all movements
+        operationId: movements
+        tags: [movements]
+        security:
+          - Bearer: []
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          "200":
+            description: Success
+            schema:
+              # a pointer to a definition
+              $ref: "#/definitions/movementsResponse"
+            # responses may fall through to errors
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/basicResponse"
+  /api/private/movement:
+    x-swagger-router-controller: movement.controller
+    post:
+        description: Create a new movement
+        operationId: create
+        tags: [movements]
+        security:
+          - Bearer: []
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters: 
+          - name: movimiento
+            in: body
+            description: the new movement
+            required: true
+            schema:
+              $ref: '#/definitions/movmentRequest'
+        responses:
+          "200":
+            description: Success
+            schema:
+              # a pointer to a definition
+              $ref: "#/definitions/movementsResponse"
+            # responses may fall through to errors
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/basicResponse"
+  /api/private/discounts/active:
+    x-swagger-router-controller: discount.controller
+    get:
+        description: Returns the list of all active discounts
+        operationId: active
+        tags: [discounts]
+        security:
+          - Bearer: []
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          "200":
+            description: Success
+            schema:
+              # a pointer to a definition
+              $ref: "#/definitions/discountsResponse"
+            # responses may fall through to errors
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/basicResponse"          
+  /api/private/discounts/next:
+    x-swagger-router-controller: discount.controller
+    get:
+        description: Returns the list of all next discounts
+        operationId: proximos
+        tags: [discounts]
+        security:
+          - Bearer: []
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          "200":
+            description: Success
+            schema:
+              # a pointer to a definition
+              $ref: "#/definitions/discountsResponse"
+            # responses may fall through to errors
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/basicResponse"          
+  /api/public/auth/login:
+    x-swagger-router-controller: user.controller
+    post:
+        description: Authenticate the user
+        operationId: login
+        tags: [Auth]
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters: 
+          - name: login
+            in: body
+            description: Fields to login the user
+            required: true
+            schema:
+              $ref: '#/definitions/loginRequest'
+        responses:
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/tokenResponse"
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/basicResponse"
+  /api/public/auth/signup:
+    x-swagger-router-controller: user.controller
+    post:
+        description: Register the user
+        operationId: signup
+        tags: [Auth]
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters: 
+          - name: signup
+            in: body
+            description: Fields to create the user
+            required: true
+            schema:
+              $ref: '#/definitions/userRequest'
+        responses:
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/tokenResponse"
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/basicResponse"
+  /api/private/profile:
+    x-swagger-router-controller: user.controller
+    get:
+        security:
+          - Bearer: []
+        description: Get user profile
+        tags: [Profile]
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/profileResponse"
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/errorResponse"
+    put:
+        security:
+          - Bearer: []
+        description: Update user profile
+        tags: [Profile]
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters: 
+          - name: userprofile
+            in: body
+            description: Fields to update the user
+            required: true
+            schema:
+              $ref: '#/definitions/userRequest'
+        responses:
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/tokenResponse"
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/basicResponse"
+  /api/private/users:
+    x-swagger-router-controller: user.controller
+    get:
+      security:
+        - Bearer: []
+      description: Get all users
+      operationId: getAll
+      tags: [Users]
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/usersResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/errorResponse"
+    put:
+      security:
+        - Bearer: []
+      description: Update user roles
+      operationId: putUserRoles
+      tags: [Users]
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters: 
+      - name: user
+        in: body
+        description: Fields to update the user roles
+        required: true
+        schema:
+          $ref: '#/definitions/userRequest'
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/basicResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/errorResponse"
+  /api/private/users/{id}:
+    x-swagger-router-controller: user.controller
+    delete:
+      security:
+        - Bearer: []
+      description: Delete a user
+      operationId: delete
+      tags: [Users]
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters: 
+        - name: id
+          in: path
+          description: ID of the User to delete
+          required: true
+          type: string 
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/basicResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/errorResponse"
+  /api/swagger:
+     x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  movementsResponse:
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/movementResponse'
+  movementResponse:
+    type: object
+    properties:
+      date: 
+        type: object
+      ammount:
+        type: number
+      categoria:
+        type: string
+      descripcion:
+        type: string  
+  discountsResponse:
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/discountResponse'
+  discountResponse:
+    type: object
+    properties:
+      categoria:
+        type: string
+      vencimiento:
+        type: object
+        example: "One of Vigente, Vencido, Canjeado" 
+      percentage: 
+        type: string
+        example: "5%, 10%, 15%"
+      estado: 
+        type: string
+  tokenResponse:
+    type: object
+    properties:
+      token:
+        type: string
+  loginRequest:
+    type: object
+    properties:
+      dni:
+        type: string
+        example: User dni
+      password:
+        type: string
+        example: User password
+  movmentRequest:
+    type: object
+    properties: 
+      date: 
+        type: string
+      ammount:
+        type: number
+      categoria:
+        type: string
+      descripcion:
+        type: string    
+  userRequest:
+    type: object
+    properties:
+      dni:
+        type: string
+        example: User dni
+      displayName:
+        type: string
+        example: User fullname
+      password:
+        type: string
+        example: User password
+      roles: 
+        type: array
+        example: User roles
+        items: 
+          type: string
+  profileResponse:
+    type: object
+    required:
+      - _id
+      - email
+      - displayName
+    properties:
+      _id:
+        type: string
+        example: Profile id
+      email:
+        type: string
+        example: User email
+      displayName:
+        type: string
+        example: User fullname
+      picture: 
+        type: string
+        example: Social picture
+      provider:
+        type: string
+        example: Social provider
+      provider_id:
+        type: string
+        example: Social provider id
+  errorResponse:
+    type: object
+    properties:
+      message:
+        type: string
+  basicResponse:
+    type: object
+    properties:
+      message:
+        type: string
+  usersResponse:
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/userResponse'
+  userResponse:
+    type: object
+    required:
+      - _id
+      - email
+      - displayName
+      - roles
+    properties:
+      _id:
+        type: string
+        example: User id
+      email:
+        type: string
+        example: User email
+      displayName:
+        type: string
+        example: User fullname
+      roles: 
+        type: array
+        example: User roles
+        items: 
+          type: string
