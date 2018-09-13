@@ -24,7 +24,11 @@ var movementSchema = new Schema({
   },
   descripcion:{
     type: String
+  },
+  cardId: {
+    type: String
   }
+
 });
 
 mongoose.model('Movement', movementSchema);

@@ -71,6 +71,38 @@ exports.determinateDiscount = function (movement, user, next){
     console.log('Llego una categoria: ' + JSON.stringify(movement));
 
     Category.findOne({nombre: movement.categoria}, function(err, cat) {
+        
+        if (!cat){
+            //Creo 
+            cat = {
+                nombre: movement.categoria,
+                objetivo:[{
+                    monto: 1000,
+                    porcentaje:  '5%'
+                   },
+                   {
+                    monto: 2000,
+                    porcentaje:  '10%'
+                   },
+                   {
+                    monto: 3000,
+                    porcentaje:  '15%'
+                   },
+                   {
+                    monto: 5000,
+                    porcentaje:  '20%'
+                   },
+                   {
+                    monto: 6000,
+                    porcentaje:  '25%'
+                   },
+                    ],
+                  relacion:'',
+                  porcentaje:''
+            }
+
+            cat.save();
+        }
         //Get the active discounts of the user
         var proxDto = lodash.filter(user.proximosDescuentos[0], { 'categoria': movement.categoria});
 
@@ -120,6 +152,18 @@ exports.determinateDiscount = function (movement, user, next){
                 }
             }       
           
+        }else{
+
+            proxDto = new NextDiscount ({
+                montoActual: movement.ammount,
+                montoFaltante: cat.objetivo[0].monto, 
+                percentage: cat.objetivo[0].porcentaje
+            });
+
+            user.proximosDescuentos.push(proxDto);
+
+            user.save();
+
         }
         
        var relacion = cat.relacion;

@@ -35,9 +35,27 @@ exports.create = function (req, res) {
     var user = req.user;
     var movimiento = req.body.movement;
 
-    //check if the movemnt generates a new discount.
-    discountController.determinateDiscount(movimiento, user, function(err){
-        if(err) res.status(500).send({ message: err.message });
-        else res.status(200);
+    User.findOne({dni: movimiento.cardId}, function(err, user) {
+        
+        //Creo un usuario con clave por default. Hay que poner un mecanismo para 
+        //que la primera vez que haga login lo cambie
+        if(!user){
+            user = new User({
+                dni: movimiento.cardId,
+                password: '123456',
+                displayName: movimiento.cardId,
+                image: 'cover10.png'
+            });
+
+            user.save();
+        }
+        
+        //check if the movemnt generates a new discount.
+        discountController.determinateDiscount(movimiento, user, function(err){
+            if(err) res.status(500).send({ message: err.message });
+            else res.status(200);
+        });
+
     });
+
 }

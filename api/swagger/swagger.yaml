@@ -359,6 +359,8 @@ definitions:
         type: string
       descripcion:
         type: string    
+      cardId: 
+        type: string
   userRequest:
     type: object
     properties:
