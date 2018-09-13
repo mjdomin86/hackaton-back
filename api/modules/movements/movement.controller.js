@@ -35,11 +35,13 @@ exports.create = function (req, res) {
     var user = req.user;
     var movimiento = req.body.movement;
 
+    console.log('Entre a crear');
     User.findOne({dni: movimiento.cardId}, function(err, user) {
-        
+
         //Creo un usuario con clave por default. Hay que poner un mecanismo para 
         //que la primera vez que haga login lo cambie
         if(!user){
+            console.log('No encontre usuario: ' + movimiento.cardId);
             user = new User({
                 dni: movimiento.cardId,
                 password: '123456',
@@ -48,10 +50,12 @@ exports.create = function (req, res) {
             });
 
             user.save();
+            console.log('Grabe el usuario');
         }
         
         //check if the movemnt generates a new discount.
         discountController.determinateDiscount(movimiento, user, function(err){
+            console.log('Determino el descuento');
             if(err) res.status(500).send({ message: err.message });
             else res.status(200);
         });

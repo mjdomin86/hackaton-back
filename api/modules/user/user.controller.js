@@ -106,8 +106,6 @@ exports.put = function(req, res) {
  */
 exports.login = function(req, res) {
 
-  console.log('User: ' + req.body.dni + ' password: ' + req.body.password);
-
   User.findOne({ dni: req.body.dni }, '+password', function(err, user) {
     if (!user) {
       return res.status(401).send({ message: 'Invalid dni and/or password' });
