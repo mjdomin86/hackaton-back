@@ -10,7 +10,7 @@ phases:
   install:
     commands:
       - echo Installing docker y docker-compose...
-      - npm install -g docker-compose
+#      - npm install -g docker-compose
   pre_build:
     commands:
       - echo starting docker...
