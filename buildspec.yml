@@ -24,7 +24,7 @@ phases:
   post_build:
     commands:
       - echo levanta docker compose docker-compose up
-      - docker-compose up
+      - docker-compose up -d
 artifacts:
   files:
     - app.js
