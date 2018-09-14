@@ -34,7 +34,7 @@ exports.active = function (req, res) {
  |--------------------------------------------------------------------------
  */
 exports.proximos = function (req, res) {
-    //var dni = req.user.dni;
+    var dni = req.user.dni;
     User.findOne({dni: dni}, function(err, user) {
   
         if(err) res.status(500).send({ message: err.message });
