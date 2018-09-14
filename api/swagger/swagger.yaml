@@ -327,7 +327,7 @@ definitions:
       categoria:
         type: string
       vencimiento:
-        type: object
+        type: string
         example: "One of Vigente, Vencido, Canjeado" 
       percentage: 
         type: string

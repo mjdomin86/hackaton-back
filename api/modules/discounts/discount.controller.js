@@ -23,6 +23,7 @@ exports.active = function (req, res) {
 
         //Get the active discounts of the user
         var lista = lodash.filter(user.descuentos, { 'estado': 'Activo'}); 
+
         res.send({list: lista});
 
     });
