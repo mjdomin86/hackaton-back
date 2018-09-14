@@ -306,7 +306,7 @@ definitions:
     type: object
     properties:
       date: 
-        type: object
+        type: string
       ammount:
         type: number
       categoria:
