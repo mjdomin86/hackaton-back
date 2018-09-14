@@ -9,14 +9,12 @@ env:
 phases:
   install:
     commands:
-      - echo Installing Mocha...
-      - npm install -g mocha
       - echo Installing docker y docker-compose...
       - npm install -g docker docker-compose
   pre_build:
     commands:
-      - echo Installing source NPM dependencies...
-      - npm i
+      - echo starting docker...
+      - systemctl start docker
   build:
     commands:
       - echo Build started on `date`
