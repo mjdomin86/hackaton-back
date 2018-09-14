@@ -28,7 +28,7 @@ var config = {
   }
 };
 
-
+console.log("backport " + ${BACK_PORT})
 //If it isn't production, use the local env file
 if(!process.env.NODE_ENV || process.env.NODE_ENV.toUpperCase() !== 'PRODUCTION'){
   const env = require('env2')('./config/.env');
