@@ -22,7 +22,8 @@ exports.active = function (req, res) {
         if(err) res.status(500).send({ message: err.message });
 
         //Get the active discounts of the user
-        res.send({list: lodash.filter(user.descuentos, { 'estado': 'Activo'} )});
+        var lista = lodash.filter(user.descuentos, { 'estado': 'Activo'}); 
+        res.send({list: lista});
 
     });
 
