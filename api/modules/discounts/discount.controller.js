@@ -15,7 +15,7 @@ var mongoose = require('mongoose'),
  |--------------------------------------------------------------------------
  */
 exports.active = function (req, res) {
-    /*var dni = req.user.dni;
+    var dni = req.user.dni;
     
     User.findOne({dni: dni}, function(err, user) {
   
@@ -24,9 +24,8 @@ exports.active = function (req, res) {
         //Get the active discounts of the user
         res.send(lodash.filter(user.descuentos[0], { 'estado': 'Activo'} ));
 
-    });*/
+    });
 
-    res.send(req.user.descuentos[0]);
 }
 
 /*
@@ -36,17 +35,14 @@ exports.active = function (req, res) {
  */
 exports.proximos = function (req, res) {
     //var dni = req.user.dni;
-    
-    res.send(req.user.proximosDescuentos[0]);
-
-    /*User.findOne({dni: dni}, function(err, user) {
+    User.findOne({dni: dni}, function(err, user) {
   
         if(err) res.status(500).send({ message: err.message });
 
         //Get the next discounts of the user
         res.send(user.proximosDescuentos[0]);
 
-    });*/
+    });
 }
 
 /*

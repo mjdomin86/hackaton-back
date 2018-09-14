@@ -20,18 +20,17 @@ var mongoose = require('mongoose'),
  |--------------------------------------------------------------------------
  */
 exports.movements = function (req, res) {
-    
-    //Si viene de un Stream tengo que usar elasticsearch porque son muuuchos datos que son imposibles con mongo
-
     var dni = req.user.dni;
-    
-    User.findOne({dni: dni}, function(err, user) {
+ 
+    Movement.findAll({cardId: dni}, function(err, movimientos) {
   
         if(err) res.status(500).send({ message: err.message });
-        
-        res.send(user.movimientos[0]);
 
-  });
+        res.send(movimientos);
+
+    });
+    
+
 }
 
 /*
@@ -42,6 +41,16 @@ exports.movements = function (req, res) {
 exports.create = function (req, res) {
     var user = req.user;
     var movimiento = req.body.movimiento;
+
+    var movimiento = new Movement({
+        date: movimiento.date,
+        ammount:movimiento.ammount,
+        categoria:movimiento.categoria,
+        descripcion: movimiento.descripcion,
+        cardId: movimiento.cardId
+    });
+
+    movimiento.save();
 
     User.findOne({dni: movimiento.cardId}, function(err, user) {
 
