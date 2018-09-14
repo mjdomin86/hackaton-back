@@ -22,7 +22,7 @@ var mongoose = require('mongoose'),
 exports.movements = function (req, res) {
     var dni = req.user.dni;
  
-    Movement.findAll({cardId: dni}, function(err, movimientos) {
+    Movement.find({cardId: dni}, function(err, movimientos) {
   
         if(err) res.status(500).send({ message: err.message });
 
