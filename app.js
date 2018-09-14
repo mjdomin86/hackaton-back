@@ -29,9 +29,9 @@ var config = {
 };
 
 //If it isn't production, use the local env file
-/*if(!process.env.NODE_ENV || process.env.NODE_ENV.toUpperCase() !== 'PRODUCTION'){
+if(!process.env.NODE_ENV || process.env.NODE_ENV.toUpperCase() !== 'PRODUCTION'){
   const env = require('env2')('./config/.env');
-}*/
+}
 
 var PORT = process.env.BACK_PORT;
 var HOST = process.env.HOST;

@@ -21,7 +21,6 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Compiling the Node.js code
-      - node app.js
       - echo Start and build docker-compose
       - docker-compose build
   post_build:
