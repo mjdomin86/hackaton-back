@@ -57,7 +57,6 @@ exports.create = function (req, res) {
 
             user.save();
         }
-        
         //check if the movemnt generates a new discount.
         Category.findOne({nombre: movimiento.categoria}, function(err, cat) {
             if (!cat){
@@ -93,28 +92,30 @@ exports.create = function (req, res) {
             }
 
             //Get the active discounts of the user
-            var proxDto = lodash.filter(user.proximosDescuentos[0], { 'categoria': movimiento.categoria});
-    
+            var proxDto = lodash.filter(user.proximosDescuentos, { 'categoria': movimiento.categoria})
+
             //Si encontré un próximo descuento, analizo si necesito o no crear un descuento
             //Si no lo encontré creo un próximo descuento y ademas me fijo si el gasto se hizo como para crear
             //un nuevo descuento
             if(proxDto[0]){
-    
                 proxDto = proxDto[0];
     
                 var montoNuevo = +proxDto.montoActual + +movimiento.ammount;
     
                 var objetivos = lodash.filter(cat.objetivo, function(item){
-                    return item.monto > montoActual;
+                    return item.monto > montoNuevo;
                 });
     
+                
+
+
                 //Si no encontré objetivos llegué al último descuento disponible
                 var objetivo;
                 if(objetivos){
                     objetivo = objetivos[0];
     
                     if(montoNuevo > +proxDto.montoFaltante){
-                        var now = Date.now();
+                        var now = new Date();
                         var vencimiento = new Date(now.getFullYear(), now.getMonth() +1, 0);
                         
                         //Creo el nuevo descuento
@@ -124,37 +125,57 @@ exports.create = function (req, res) {
                             vencimiento: vencimiento
                         });
                 
-                        user.descuentos.push(d);
-                            
-                        proxDto.montoActual = montoNuevo;
-                        proxDto.montoFaltante = +objetivo.monto - montoNuevo;
-                        proxDto.percentage = objetivo.percentage;
-    
-                        user.save();
+                        User.update({dni: movimiento.cardId}, 
+                            {$push: {descuentos: d}},
+                            function(err, numAffected){
+                                if(err) console.log('Error al crear el nuevo descuento');
+                            });
+                        
+                        User.update(
+                            {dni: movimiento.cardId, 'proximosDescuentos.categoria': movimiento.categoria}, 
+                            {'$set': {
+                                'proximosDescuentos.$.montoActual': montoNuevo,
+                                'proximosDescuentos.$.montoFaltante': +objetivo.monto - +montoNuevo,
+                                'proximosDescuentos.$.percentage': objetivo.porcentaje
+                            }}
+                            , function(err, numAffected){
+                                if(err) console.error('Error al crear' + err);
+                                console.log(numAffected);
+                        });
+
                     
                     }else{
                         //actualizo el proximo descuento
-                        proxDto.montoActual = montoNuevo;
-                        proxDto.montoFaltante = +objetivo.monto - montoNuevo;
-    
-                        user.save();
+                        User.update(
+                            {dni: movimiento.cardId, 'proximosDescuentos.categoria': movimiento.categoria}, 
+                            {'$set': {
+                                'proximosDescuentos.$.montoActual': montoNuevo,
+                                'proximosDescuentos.$.montoFaltante': +objetivo.monto - +montoNuevo
+                            }}
+                            , function(err, numAffected){
+                                if(err) console.error('Error al crear' + err);
+                                console.log(numAffected);
+                        });
+
                     }
                 }       
               
             }else{
-    
                 proxDto = new NextDiscount ({
+                    categoria: movimiento.categoria,
                     montoActual: movimiento.ammount,
-                    montoFaltante: cat.objetivo[0].monto, 
+                    montoFaltante: +cat.objetivo[0].monto - +movimiento.ammount, 
                     percentage: cat.objetivo[0].porcentaje
                 });
-    
-                user.proximosDescuentos.push(proxDto);
-    
-                user.save();
+
+                User.update({dni: movimiento.cardId}, 
+                            {$push: {proximosDescuentos: proxDto}},
+                            function(err, numAffected){
+                                if(err) console.log('Error al crear el nuevo descuento');
+                            });
     
             }
-            
+
             var relacion = cat.relacion;
            //Tengo que guardar un nuevo descuento
            if(relacion){
@@ -168,11 +189,14 @@ exports.create = function (req, res) {
                     vencimiento: vencimiento
                 });
     
-                user.descuentos.push(d);
-                user.save();
+                User.update({dni: movimiento.cardId}, 
+                    {$push: {descuentos: d}},
+                    function(err, numAffected){
+                        if(err) console.log('Error al crear el nuevo descuento');
+                    });
            }
-           
-           res.status(500).send({ message: 'ok' });
+
+           res.status(200).send({ message: 'ok' });
            
         }); 
 
