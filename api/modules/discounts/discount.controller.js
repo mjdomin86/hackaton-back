@@ -22,7 +22,7 @@ exports.active = function (req, res) {
         if(err) res.status(500).send({ message: err.message });
 
         //Get the active discounts of the user
-        res.send(lodash.filter(user.descuentos[0], { 'estado': 'Activo'} ));
+        res.send(lodash.filter(user.descuentos, { 'estado': 'Activo'} ));
 
     });
 
@@ -40,7 +40,7 @@ exports.proximos = function (req, res) {
         if(err) res.status(500).send({ message: err.message });
 
         //Get the next discounts of the user
-        res.send(user.proximosDescuentos[0]);
+        res.send(user.proximosDescuentos);
 
     });
 }
