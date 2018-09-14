@@ -26,7 +26,7 @@ exports.movements = function (req, res) {
   
         if(err) res.status(500).send({ message: err.message });
 
-        res.send(movimientos);
+        res.send({list: movimientos});
 
     });
     
